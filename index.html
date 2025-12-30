@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حسابات مطعم باحجري</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --main-dark: #1e2b37;
+            --accent: #2ecc71;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ترويسة الموقع - منحنية من الأسفل */
+        .header-section {
+            width: 100%;
+            background: linear-gradient(135deg, #1e2b37 0%, #2c3e50 100%);
+            color: white;
+            padding: 35px 15px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header-section h1 { font-size: 1.8em; margin-bottom: 5px; }
+        .header-section p { font-size: 0.95em; opacity: 0.8; }
+
+        .guide-bar {
+            width: 92%;
+            max-width: 400px;
+            background: white;
+            border-radius: 15px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .step { text-align: center; flex: 1; font-size: 0.75em; font-weight: bold; color: #555; }
+        .step-icon { display: block; font-size: 1.5em; margin-bottom: 3px; }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 0 15px;
+            flex: 1; /* يضمن تمدد الحاوية لدفع التذييل لأسفل الشاشة */
+        }
+        
+        .bank-card {
+            width: 100%;
+            border-radius: 22px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .bank-logo-circle {
+            width: 65px;
+            height: 65px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            flex-shrink: 0;
+        }
+
+        .bank-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+        .bank-name { font-weight: bold; font-size: 1.35em; line-height: 1.2; }
+
+        .owner-name { 
+            font-size: 0.95em; 
+            background: rgba(0, 0, 0, 0.12);
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .acc-number { 
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.7em; 
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 12px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            letter-spacing: 1.5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            background-color: white;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* التذييل المحدث بـ زوايا منحنية مثل الهيدر */
+        footer {
+            width: 100%;
+            background: linear-gradient(135deg, #1e2b37 0%, #2c3e50 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-radius: 30px 30px 0 0; /* انحناء الزوايا العلوية */
+            font-size: 0.9em;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        #toast {
+            visibility: hidden;
+            background-color: #2ecc71;
+            color: white;
+            text-align: center;
+            border-radius: 50px;
+            padding: 10px 25px;
+            position: fixed;
+            bottom: 30px;
+            z-index: 100;
+            font-weight: bold;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body>
+
+    <header class="header-section">
+        <h1>مطعم باحجري</h1>
+        <p>بوابة الدفع الإلكتروني المباشر</p>
+    </header>
+
+    <div class="guide-bar">
+        <div class="step"><span class="step-icon">🏦</span>اختر المصرف</div>
+        <div class="step"><span class="step-icon">📋</span>انسخ الرقم</div>
+        <div class="step"><span class="step-icon">✅</span>سدد بنجاح</div>
+    </div>
+    
+    <div class="container" id="bankList"></div>
+
+    <footer>
+       🚀 تصميم وتطوير/ <b>طائع العكبري</b><br>
+       📞 تواصل: 737606405
+    </footer>
+
+    <div id="toast">تم النسخ ✅</div>
+
+    <script>
+        const banks = [
+            { name: "شركة العمقي", owner: "عمر سعيد عمر باحجري", acc: "254085733", color: "#21B573", logo: "logo_amqy.png" },
+            { name: "شركة المحضار", owner: "عمر سعيد عمر باحجري", acc: "90547", color: "#1A2A47", logo: "logo_mahdhar.png" },
+            { name: "شركة بن دول", owner: "محمد سعيد عمر باحجري", acc: "23155897", color: "#2e5a88", logo: "logo_bindoul.png" },
+            { name: "بنك بن دول", owner: "محمد سعيد عمر باحجري", acc: "سيتم إضافته", color: "#2E3192", logo: "logo_bindoulbnk.png" },
+            { name: "شركة البسيري", owner: "احمد سعيد عمر باحجري", acc: "239108048", color: "#1D3E92", logo: "logo_busairi.png" },
+            { name: "بنك حضرموت", owner: "مطعم باحجري بحضرموت", acc: "49498", color: "#244B94", logo: "logo_hadhramout.png" },
+            { name: "بنك القطيبي", owner: "محمد سعيد عمر باحجري", acc: "92836680", color: "#9dcd5a", logo: "logo_kutibi.png" },
+            { name: "بنك الكريمي يمني", owner: "محمد سعيد عمر باحجري", acc: "3096314848", color: "#6B2DAB", logo: "logo_kuraimi.png" },
+            { name: "بنك الكريمي سعودي", owner: "محمد سعيد عمر باحجري", acc: "سيتم إضافته", color: "#6B2DAB", logo: "logo_kuraimi.png" },
+            { name: "الكريمي حاسب", owner: "مطعم باحجري", acc: "992618", color: "#9C5FD1", logo: "logo_kuraimipay.png" },
+            { name: "بن دول باي", owner: "مطعم باحجري", acc: "سيتم إضافته", color: "#0d47a1", logo: "logo_bindoul_pay.png" },
+            { name: "القطيبي شلن", owner: "مطعم باحجري", acc: "سيتم إضافته", color: "#B6D433", logo: "logo_kutibi_shilin.png" }
+        ];
+
+        const container = document.getElementById('bankList');
+
+        banks.forEach(bank => {
+            const card = document.createElement('div');
+            card.className = 'bank-card';
+            card.style.backgroundColor = bank.color;
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="bank-info">
+                        <span class="bank-name">${bank.name}</span><br>
+                        <span class="owner-name">${bank.owner}</span>
+                    </div>
+                    <div class="bank-logo-circle">
+                        <img src="${bank.logo}" alt="Logo" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=Bank'">
+                    </div>
+                </div>
+                <div class="acc-number">${bank.acc}</div>
+                <button onclick="copyText('${bank.acc}')">📋 نسخ رقم الحساب</button>
+            `;
+            container.appendChild(card);
+        });
+
+        function copyText(text) {
+            if(text === "سيتم إضافته") {
+                alert("الرقم غير متوفر حالياً");
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
