@@ -1,246 +1,1515 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حسابات مطعم باحجري</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a" id="metaTheme">
+<meta name="description" content="حسابات الدفع الإلكتروني لمطعم باحجري — اختر حسابك، امسح رمز QR أو انسخ الرقم، وسدد بأمان.">
+<meta property="og:title" content="حسابات مطعم باحجري">
+<link rel="manifest" id="manifestLink">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>حسابات مطعم باحجري</title>
+<style>
+:root {
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --card-2: #f8fafc;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --accent: #10b981;
+    --accent-2: #059669;
+    --accent-soft: rgba(16,185,129,.12);
+    --dark: #0f172a;
+    --warning-soft: #fef3c7;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06);
+    --shadow-md: 0 4px 6px -1px rgba(15,23,42,.06), 0 2px 4px -2px rgba(15,23,42,.06);
+    --shadow-lg: 0 20px 25px -5px rgba(15,23,42,.08), 0 8px 10px -6px rgba(15,23,42,.05);
+    --ease: cubic-bezier(.2,.8,.3,1);
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+[data-theme="dark"] {
+    --bg: #0a0f1a;
+    --card: #111827;
+    --card-2: #1a2332;
+    --text: #f1f5f9;
+    --text-2: #cbd5e1;
+    --muted: #94a3b8;
+    --border: #1e293b;
+    --dark: #030712;
+    --warning-soft: #3d2d0a;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    --shadow-md: 0 4px 6px rgba(0,0,0,.3);
+    --shadow-lg: 0 20px 25px -5px rgba(0,0,0,.5), 0 8px 10px -6px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background-color .35s, color .35s;
+}
 
-        :root {
-            --main-dark: #1e2b37;
-            --accent: #2ecc71;
-        }
+/* ============== شاشة البداية ============== */
+#splash {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 18px;
+    transition: opacity .55s var(--ease), visibility .55s;
+}
+#splash.hide { opacity: 0; visibility: hidden; }
+.splash-logo { font-size: 4rem; animation: splashBounce 1.2s var(--ease) infinite alternate; }
+@keyframes splashBounce { from { transform: translateY(0) scale(1); } to { transform: translateY(-12px) scale(1.08); } }
+.splash-title { color: #fff; font-weight: 800; font-size: 1.35rem; letter-spacing: -.5px; }
+.splash-bar { width: 160px; height: 3px; background: rgba(255,255,255,.12); border-radius: 3px; overflow: hidden; position: relative; }
+.splash-bar::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: splashBar 1.4s ease-in-out infinite;
+}
+@keyframes splashBar { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            width: 100%;
-            overflow-x: hidden;
-        }
+/* ============== خلفية الشفق ============== */
+.aurora { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+.blob-1 { width: 420px; height: 420px; background: rgba(16,185,129,.20); top: -120px; right: -120px; animation: float1 20s ease-in-out infinite; }
+.blob-2 { width: 380px; height: 380px; background: rgba(59,130,246,.14); bottom: 8%; left: -160px; animation: float2 26s ease-in-out infinite; }
+.blob-3 { width: 320px; height: 320px; background: rgba(168,85,247,.12); top: 45%; right: 25%; animation: float3 23s ease-in-out infinite; }
+@keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-40px,50px) scale(1.12)} }
+@keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,-30px) scale(.92)} }
+@keyframes float3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,-40px) scale(1.08)} }
 
-        /* ترويسة الموقع - منحنية من الأسفل */
-        .header-section {
-            width: 100%;
-            background: linear-gradient(135deg, #1e2b37 0%, #2c3e50 100%);
-            color: white;
-            padding: 35px 15px;
-            text-align: center;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
+.scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), #34d399, var(--accent));
+    transform: scaleX(0); transform-origin: right center; z-index: 9999;
+}
 
-        .header-section h1 { font-size: 1.8em; margin-bottom: 5px; }
-        .header-section p { font-size: 0.95em; opacity: 0.8; }
+/* ============== الترويسة ============== */
+.header {
+    position: relative; z-index: 1; background: var(--dark);
+    color: #fff; padding: calc(18px + var(--safe-top)) 16px 56px;
+    text-align: center; overflow: hidden;
+    transition: background-color .35s;
+}
+.header::before {
+    content: ''; position: absolute; top: -40%; left: 50%;
+    width: 700px; height: 700px; transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(16,185,129,.14) 0%, transparent 55%);
+    pointer-events: none;
+}
+.header::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 20%, transparent 78%);
+    mask-image: radial-gradient(ellipse at 50% 40%, #000 20%, transparent 78%);
+    pointer-events: none;
+}
+.header-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+.top-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; gap: 8px;
+}
+.control-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    min-height: 38px; padding: 8px 14px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 100px; color: #fff;
+    font-family: inherit; font-size: .75rem; font-weight: 600;
+    cursor: pointer; transition: all .25s var(--ease);
+    backdrop-filter: blur(8px); touch-action: manipulation;
+}
+.control-btn:hover { background: rgba(255,255,255,.14); }
+.control-btn:active { transform: scale(.95); }
+.control-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.clock {
+    display: inline-flex; align-items: center; gap: 6px;
+    min-height: 38px; padding: 8px 14px;
+    font-size: .75rem; font-weight: 600;
+    color: rgba(255,255,255,.75);
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 100px;
+    direction: ltr; font-variant-numeric: tabular-nums;
+}
+.clock svg { width: 13px; height: 13px; opacity: .7; }
+.brand-mark {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 15px; background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1); border-radius: 100px;
+    font-size: .72rem; font-weight: 600; letter-spacing: .3px;
+    color: rgba(255,255,255,.8); margin-bottom: 14px;
+    backdrop-filter: blur(8px);
+}
+.brand-mark .dot {
+    width: 6px; height: 6px; background: var(--accent);
+    border-radius: 50%; box-shadow: 0 0 10px var(--accent);
+    animation: pulseDot 2.5s ease-in-out infinite;
+}
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.85)} }
+.header h1 {
+    font-size: clamp(1.4rem, 6vw, 2rem); font-weight: 800;
+    letter-spacing: -.6px; margin-bottom: 6px; line-height: 1.2;
+    background: linear-gradient(90deg, #fff, #a7f3d0, #fff);
+    background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmerText 5s linear infinite;
+}
+@keyframes shimmerText { to { background-position: -200% center; } }
+.header p { font-size: .82rem; color: rgba(255,255,255,.6); }
 
-        .guide-bar {
-            width: 92%;
-            max-width: 400px;
-            background: white;
-            border-radius: 15px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
+/* ============== شريط الإعلانات ============== */
+.marquee {
+    position: relative; z-index: 1; background: var(--accent);
+    color: #fff; overflow: hidden; height: 34px;
+    display: flex; align-items: center; font-size: .76rem; font-weight: 600;
+    margin-bottom: 8px;
+}
+.marquee-track {
+    display: flex; gap: 40px; white-space: nowrap;
+    animation: marqueeScroll 28s linear infinite;
+    padding-right: 20px;
+}
+.marquee-track span { display: inline-flex; align-items: center; gap: 8px; }
+@keyframes marqueeScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(100%); }
+}
+.marquee-close {
+    position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,.22); border: none; color: #fff;
+    width: 26px; height: 26px; border-radius: 50%;
+    cursor: pointer; font-size: .75rem; display: grid; place-items: center;
+    z-index: 2; touch-action: manipulation;
+}
 
-        .step { text-align: center; flex: 1; font-size: 0.75em; font-weight: bold; color: #555; }
-        .step-icon { display: block; font-size: 1.5em; margin-bottom: 3px; }
+/* ============== تنبيه أمني ============== */
+.security-banner {
+    position: relative; z-index: 2;
+    max-width: 900px; margin: 0 auto 10px; padding: 0 14px;
+}
+.security-inner {
+    display: flex; align-items: flex-start; gap: 9px;
+    background: var(--warning-soft);
+    border: 1px solid rgba(245,158,11,.35);
+    color: #92400e; padding: 10px 12px;
+    border-radius: 12px; font-size: .76rem; font-weight: 600;
+    line-height: 1.55;
+}
+[data-theme="dark"] .security-inner { color: #fbbf24; }
+.security-inner > span:first-child { font-size: .95rem; flex-shrink: 0; }
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 0 15px;
-            flex: 1; /* يضمن تمدد الحاوية لدفع التذييل لأسفل الشاشة */
-        }
-        
-        .bank-card {
-            width: 100%;
-            border-radius: 22px;
-            padding: 18px;
-            margin-bottom: 18px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            color: white;
-            display: flex;
-            flex-direction: column;
-        }
+/* ============== الحاوية ============== */
+.container {
+    flex: 1; width: 100%; max-width: 900px;
+    margin: -40px auto 0; padding: 0 14px 40px;
+    position: relative; z-index: 2;
+}
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 12px;
-        }
+/* ============== البحث ============== */
+.search-box { position: relative; margin-bottom: 12px; }
+.search-box svg {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; color: var(--muted);
+    pointer-events: none; transition: color .2s, transform .2s;
+}
+.search-box input {
+    width: 100%; padding: 14px 46px 14px 16px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; font-family: inherit; font-size: 1rem;
+    color: var(--text); outline: none; box-shadow: var(--shadow-md);
+    transition: border-color .2s, box-shadow .2s, background-color .35s;
+    -webkit-appearance: none; appearance: none;
+}
+.search-box input::placeholder { color: #94a3b8; font-size: .9rem; }
+.search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft), var(--shadow-md); }
+.search-box input:focus + svg { color: var(--accent); transform: translateY(-50%) scale(1.1); }
 
-        .bank-logo-circle {
-            width: 65px;
-            height: 65px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            flex-shrink: 0;
-        }
+/* ============== التصنيفات ============== */
+.filters {
+    display: flex; gap: 7px; overflow-x: auto;
+    padding: 0 14px 4px; margin: 0 -14px 10px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.filters::-webkit-scrollbar { display: none; }
+.chip {
+    flex: 0 0 auto; position: relative; overflow: hidden;
+    min-height: 38px; padding: 8px 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 100px; font-family: inherit; font-size: .8rem; font-weight: 600;
+    color: var(--text-2); cursor: pointer;
+    transition: all .25s var(--ease); white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+    display: inline-flex; align-items: center; gap: 5px;
+    touch-action: manipulation;
+}
+.chip:hover { border-color: #cbd5e1; }
+.chip:active { transform: scale(.95); }
+.chip.active { background: var(--dark); color: #fff; border-color: var(--dark); }
+.chip svg { width: 13px; height: 13px; }
 
-        .bank-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+/* ============== سجل النسخ ============== */
+.history-section {
+    display: none; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px; margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: background-color .35s;
+}
+.history-section.show { display: block; animation: fadeUp .4s var(--ease); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.history-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 9px; font-size: .76rem; font-weight: 700; color: var(--muted);
+    gap: 8px;
+}
+.history-header button {
+    background: transparent; border: none; color: var(--muted);
+    font-family: inherit; font-size: .72rem; font-weight: 600;
+    cursor: pointer; padding: 5px 9px; border-radius: 6px;
+    transition: background .2s; min-height: 32px;
+}
+.history-header button:hover { background: var(--accent-soft); color: var(--accent-2); }
+.history-list { display: flex; flex-direction: column; gap: 5px; }
+.history-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; background: var(--card-2); border-radius: 10px;
+    font-size: .76rem;
+}
+.history-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.history-info { flex: 1; min-width: 0; }
+.history-name { font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history-acc { font-family: 'Courier New', monospace; direction: ltr; color: var(--muted); font-size: .7rem; }
+.history-copy {
+    background: transparent; border: none; cursor: pointer;
+    color: var(--accent-2); padding: 6px 10px; border-radius: 6px;
+    font-family: inherit; font-weight: 700; font-size: .72rem;
+    transition: background .2s; min-height: 34px;
+    touch-action: manipulation; flex-shrink: 0;
+}
+.history-copy:hover { background: var(--accent-soft); }
 
-        .bank-name { font-weight: bold; font-size: 1.35em; line-height: 1.2; }
+/* ============== عدد النتائج ============== */
+.results {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 4px 10px; font-size: .76rem;
+    color: var(--muted); font-weight: 500; min-height: 28px;
+}
+.results .count { display: inline-flex; align-items: center; gap: 6px; }
+.results .count::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 8px var(--accent);
+    animation: pulseDot 2s ease-in-out infinite;
+}
+.results .count b { color: var(--accent-2); font-weight: 800; font-variant-numeric: tabular-nums; }
 
-        .owner-name { 
-            font-size: 0.95em; 
-            background: rgba(0, 0, 0, 0.12);
-            padding: 2px 8px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-top: 5px;
-        }
+/* ============================================
+   ★★★ البطاقات الجديدة — 3D تفاعلية فاخرة ★★★
+   ============================================ */
+.cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
 
-        .acc-number { 
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.7em; 
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.15);
-            padding: 10px;
-            text-align: center;
-            border-radius: 12px;
-            margin: 12px 0;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            letter-spacing: 1.5px;
-        }
+@media (min-width: 720px) {
+    .cards { grid-template-columns: 1fr 1fr; gap: 18px; }
+}
 
-        button {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            background-color: white;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+/* -------- الغلاف (يحمل الـ perspective) -------- */
+.card-wrap {
+    perspective: 1200px;
+    display: flex;
+    height: 100%;
+    animation: wrapIn .7s cubic-bezier(.34, 1.25, .64, 1) backwards;
+}
 
-        /* التذييل المحدث بـ زوايا منحنية مثل الهيدر */
-        footer {
-            width: 100%;
-            background: linear-gradient(135deg, #1e2b37 0%, #2c3e50 100%);
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
-            border-radius: 30px 30px 0 0; /* انحناء الزوايا العلوية */
-            font-size: 0.9em;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
+@keyframes wrapIn {
+    from { opacity: 0; transform: translateY(40px) scale(.9); }
+    to { opacity: 1; transform: none; }
+}
 
-        #toast {
-            visibility: hidden;
-            background-color: #2ecc71;
-            color: white;
-            text-align: center;
-            border-radius: 50px;
-            padding: 10px 25px;
-            position: fixed;
-            bottom: 30px;
-            z-index: 100;
-            font-weight: bold;
-        }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-    </style>
+/* -------- البطاقة نفسها -------- */
+.card {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    border-radius: 20px;
+    padding: 18px;
+    background: var(--bank-color, #10b981);
+    color: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform-style: preserve-3d;
+    transition: transform .5s cubic-bezier(.2,.8,.3,1), box-shadow .4s;
+    box-shadow:
+        0 6px 20px -6px rgba(0, 0, 0, .25),
+        0 2px 6px -2px rgba(0, 0, 0, .12);
+    will-change: transform;
+}
+
+.card:hover {
+    box-shadow:
+        0 28px 55px -18px rgba(0, 0, 0, .38),
+        0 10px 20px -6px rgba(0, 0, 0, .18);
+}
+
+[data-theme="dark"] .card {
+    box-shadow: 0 6px 22px -6px rgba(0, 0, 0, .6);
+}
+[data-theme="dark"] .card:hover {
+    box-shadow: 0 28px 55px -18px rgba(0, 0, 0, .75);
+}
+
+/* -------- خلفية زخرفية (دوائر) -------- */
+.card-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, rgba(0,0,0,.18) 100%);
+}
+.card-bg::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+}
+.card-bg::after {
+    content: '';
+    position: absolute;
+    top: -70px; right: -70px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.12);
+}
+
+/* -------- الانعكاس الضوئي (يتبع المؤشر) -------- */
+.card-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        circle 300px at var(--mx, 50%) var(--my, 50%),
+        rgba(255,255,255,.3) 0%,
+        rgba(255,255,255,.08) 25%,
+        transparent 55%
+    );
+    opacity: 0;
+    transition: opacity .35s;
+    pointer-events: none;
+    z-index: 1;
+}
+.card:hover .card-shine { opacity: 1; }
+
+/* -------- طبقة المحتوى (بمساحة 3D) -------- */
+.card-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    transform-style: preserve-3d;
+    transform: translateZ(0.1px);
+}
+
+/* -------- القسم العلوي (يطفو قليلاً) -------- */
+.card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    transform-style: preserve-3d;
+    transform: translateZ(15px);
+}
+
+.card-info {
+    min-width: 0;
+    flex: 1;
+    transform: translateZ(10px);
+}
+
+.card-name {
+    font-size: .96rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 3px rgba(0,0,0,.3);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-owner {
+    display: inline-block;
+    font-size: .68rem;
+    font-weight: 600;
+    color: rgba(255,255,255,.95);
+    padding: 3px 9px;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 7px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 1px rgba(0,0,0,.15);
+    backdrop-filter: blur(4px);
+}
+
+/* -------- الشعار (يطفو أعلى) -------- */
+.card-logo {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, .25),
+        0 2px 4px rgba(0, 0, 0, .1),
+        inset 0 1px 0 rgba(255, 255, 255, .9);
+    transform: translateZ(40px);
+    transition: transform .35s var(--ease);
+}
+.card-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.card-logo .fallback {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--bank-color, #10b981);
+    font-family: 'Cairo', sans-serif;
+}
+
+/* -------- حاوية رقم الحساب (طافية في الوسط) -------- */
+.acc-wrap {
+    transform: translateZ(25px);
+    margin-bottom: 12px;
+}
+
+.acc-label {
+    display: block;
+    font-size: .64rem;
+    font-weight: 700;
+    color: rgba(255,255,255,.65);
+    letter-spacing: .9px;
+    margin-bottom: 5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+
+.acc-num {
+    width: 100%;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1.6px;
+    direction: ltr;
+    text-align: center;
+    background: rgba(0, 0, 0, .3);
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 11px;
+    padding: 12px 10px;
+    cursor: pointer;
+    transition: background .2s, border-color .2s, transform .15s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+}
+.acc-num:hover {
+    background: rgba(0, 0, 0, .42);
+    border-color: rgba(255, 255, 255, .38);
+}
+.acc-num:active { transform: scale(.985); }
+
+.acc-num.unavailable {
+    font-family: inherit;
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    direction: rtl;
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, .22);
+    border-style: dashed;
+}
+
+/* -------- أزرار الإجراءات (طافية قليلاً) -------- */
+.card-actions {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 6px;
+    margin-top: auto;
+    transform: translateZ(20px);
+}
+
+.icon-btn {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 42px;
+    padding: 8px 4px;
+    background: rgba(255, 255, 255, .16);
+    border: 1px solid rgba(255, 255, 255, .24);
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .72rem;
+    font-weight: 700;
+    transition: all .22s var(--ease);
+    touch-action: manipulation;
+    text-decoration: none;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+.icon-btn:hover {
+    background: rgba(255, 255, 255, .3);
+    border-color: rgba(255, 255, 255, .45);
+}
+.icon-btn:active { transform: scale(.94); }
+
+.icon-btn svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+/* الزر الرئيسي (نسخ) — أبيض صريح */
+.icon-btn.primary {
+    background: #fff;
+    border-color: #fff;
+    color: var(--bank-color, #10b981);
+    text-shadow: none;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+}
+.icon-btn.primary:hover {
+    background: rgba(255, 255, 255, .92);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+}
+
+/* واتساب */
+.icon-btn.wa:hover {
+    background: #25D366;
+    border-color: #25D366;
+    color: #fff;
+    text-shadow: none;
+}
+
+/* المفضلة النشطة */
+.icon-btn.fav-btn.active {
+    background: #fbbf24;
+    border-color: #fbbf24;
+    color: #fff;
+    text-shadow: none;
+}
+
+.icon-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.icon-btn.copied {
+    background: #fbbf24;
+    border-color: #fbbf24;
+    color: #fff;
+    text-shadow: none;
+    animation: copyPop .5s var(--ease);
+}
+
+@keyframes copyPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+/* -------- توهج النجاح على البطاقة -------- */
+.card.success {
+    animation: successGlow .9s ease;
+}
+@keyframes successGlow {
+    0%   { box-shadow: 0 0 0 0 rgba(255,255,255,.55), 0 6px 20px -6px rgba(0,0,0,.25); }
+    55%  { box-shadow: 0 0 0 10px rgba(255,255,255,.1), 0 25px 50px -15px rgba(0,0,0,.35); }
+    100% { box-shadow: 0 6px 20px -6px rgba(0,0,0,.25); }
+}
+
+/* ============== الحالة الفارغة ============== */
+.empty { display: none; text-align: center; padding: 50px 20px; color: var(--muted); }
+.empty.show { display: block; animation: fadeUp .45s var(--ease); }
+.empty svg { width: 42px; height: 42px; margin-bottom: 12px; color: #cbd5e1; }
+.empty p { font-size: .88rem; font-weight: 500; }
+
+/* ============== الفوتر ============== */
+.footer {
+    position: relative; z-index: 1; background: var(--dark);
+    color: #fff; padding: 28px 16px calc(24px + var(--safe-bottom));
+    text-align: center; overflow: hidden;
+    transition: background-color .35s;
+}
+.footer::before {
+    content: ''; position: absolute; bottom: -160px; left: 50%;
+    transform: translateX(-50%); width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(16,185,129,.1), transparent 60%);
+    pointer-events: none;
+}
+.footer-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+.footer .dev-line { font-size: .82rem; color: rgba(255,255,255,.55); margin-bottom: 5px; }
+.footer .dev-line b { color: rgba(255,255,255,.95); font-weight: 600; }
+.footer .dev-phone { 
+    font-size: .82rem; 
+    color: var(--accent); 
+    direction: ltr; 
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+/* ============== FAB ============== */
+.fab {
+    position: fixed; bottom: calc(18px + var(--safe-bottom)); left: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 18px;
+    background: var(--dark); color: #fff; text-decoration: none;
+    border-radius: 100px; font-size: .82rem; font-weight: 600;
+    box-shadow: 0 10px 30px -10px rgba(15,23,42,.5);
+    transition: transform .3s var(--ease), background .25s, box-shadow .3s;
+    z-index: 100; border: none; cursor: pointer;
+    font-family: inherit; touch-action: manipulation;
+    min-height: 46px;
+}
+.fab::before {
+    content: ''; position: absolute; inset: -4px; border-radius: 100px;
+    border: 2px solid rgba(16,185,129,.4);
+    animation: fabPulse 2.6s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes fabPulse { 0%{transform:scale(1);opacity:.9} 100%{transform:scale(1.18);opacity:0} }
+.fab svg { width: 16px; height: 16px; }
+.fab:hover { transform: translateY(-3px); }
+.fab:active { transform: scale(.94); }
+
+/* ============== التوست ============== */
+.toast {
+    position: fixed; left: 50%; bottom: calc(24px + var(--safe-bottom));
+    transform: translate(-50%, 80px);
+    display: flex; align-items: center; gap: 9px;
+    background: var(--dark); color: #fff;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: .82rem; font-weight: 600;
+    box-shadow: var(--shadow-lg); opacity: 0;
+    transition: all .35s var(--ease); z-index: 300;
+    white-space: nowrap; overflow: hidden;
+    max-width: calc(100vw - 32px);
+}
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+.toast.error { background: #dc2626; }
+.toast.error svg { color: #fff; }
+.toast-progress {
+    position: absolute; bottom: 0; right: 0; height: 2px;
+    background: var(--accent); width: 100%;
+    transform-origin: right; animation: toastBar 2.8s linear forwards;
+}
+.toast.error .toast-progress { background: rgba(255,255,255,.6); }
+@keyframes toastBar { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+
+/* ============== الكونفيتي ============== */
+.confetti {
+    position: fixed; width: 8px; height: 8px; border-radius: 2px;
+    pointer-events: none; z-index: 400;
+    animation: confettiBurst .95s cubic-bezier(.15,.9,.3,1) forwards;
+}
+@keyframes confettiBurst {
+    0%   { transform: translate(0,0) rotate(0); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+}
+
+/* ============== نافذة QR ============== */
+.modal {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(15,23,42,.7); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center;
+    padding: 16px;
+}
+.modal.show { display: flex; animation: modalIn .3s var(--ease); }
+@keyframes modalIn { from{opacity:0} to{opacity:1} }
+.modal-content {
+    background: var(--card); border-radius: 20px;
+    padding: 22px 18px;
+    max-width: 360px; width: 100%;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,.4);
+    position: relative;
+    animation: modalSlide .35s var(--ease);
+}
+@keyframes modalSlide { from { transform: translateY(20px) scale(.95); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-close {
+    position: absolute; top: 10px; left: 10px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--card-2); border: 1px solid var(--border);
+    cursor: pointer; display: grid; place-items: center;
+    color: var(--muted); font-size: 1rem;
+    transition: all .2s; touch-action: manipulation;
+}
+.modal-close:hover { background: var(--accent-soft); color: var(--accent-2); }
+.modal-title {
+    font-size: 1rem; font-weight: 800; color: var(--text);
+    text-align: center; margin-bottom: 4px; padding: 0 30px;
+}
+.modal-subtitle { font-size: .76rem; color: var(--muted); text-align: center; margin-bottom: 16px; font-weight: 500; }
+.qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.qr-code {
+    width: 220px; height: 220px; max-width: 100%; background: #fff;
+    border-radius: 16px; padding: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.1);
+    display: grid; place-items: center;
+}
+.qr-code img { width: 100%; height: 100%; display: block; border-radius: 8px; }
+.qr-acc {
+    font-family: 'Courier New', monospace; direction: ltr;
+    font-size: 1.05rem; font-weight: 800; color: var(--text);
+    letter-spacing: 1.4px; padding: 9px 14px;
+    background: var(--card-2); border-radius: 10px;
+    cursor: pointer; transition: background .2s;
+    touch-action: manipulation;
+}
+.qr-acc:active { transform: scale(.97); }
+.qr-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.5; }
+
+/* ============== استجابة ============== */
+@media (max-width: 400px) {
+    .container { padding: 0 12px 32px; }
+    .card { padding: 15px; border-radius: 18px; }
+    .card-name { font-size: .88rem; }
+    .card-owner { font-size: .64rem; padding: 2px 7px; }
+    .card-logo { width: 44px; height: 44px; border-radius: 11px; }
+    .acc-num { font-size: .95rem; padding: 10px 6px; letter-spacing: 1px; }
+    .card-actions { gap: 5px; }
+    .icon-btn { font-size: .66rem; padding: 7px 2px; min-height: 40px; }
+    .icon-btn svg { width: 13px; height: 13px; }
+    .header { padding: calc(14px + var(--safe-top)) 12px 50px; }
+    .security-inner { font-size: .72rem; padding: 9px 10px; }
+    .search-box input { padding: 13px 42px 13px 14px; font-size: .95rem; }
+    .chip { font-size: .76rem; padding: 7px 12px; min-height: 36px; }
+    .fab { font-size: .78rem; padding: 11px 15px; min-height: 44px; }
+    .qr-code { width: 200px; height: 200px; }
+}
+
+@media (max-width: 340px) {
+    .icon-btn span { display: none; }
+    .icon-btn.primary span { display: inline; }
+    .acc-num { font-size: .86rem; letter-spacing: .6px; }
+    .card-owner { display: none; }
+    .card-name { font-size: .82rem; }
+}
+
+@media (min-width: 720px) {
+    .card { padding: 20px; border-radius: 22px; }
+    .card-name { font-size: 1rem; }
+    .acc-num { font-size: 1.2rem; }
+    .card-logo { width: 54px; height: 54px; }
+    .icon-btn { font-size: .78rem; min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+    }
+}
+</style>
 </head>
 <body>
 
-    <header class="header-section">
+<div id="splash">
+    <div class="splash-logo">🍽️</div>
+    <div class="splash-title">مطعم باحجري</div>
+    <div class="splash-bar"></div>
+</div>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="aurora" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+</div>
+
+<header class="header">
+    <div class="header-inner">
+        <div class="top-controls">
+            <button class="control-btn" id="themeToggle" aria-label="تبديل الوضع الليلي">
+                <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <span id="themeText">ليلي</span>
+            </button>
+            <div class="clock">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span id="clock">--:--</span>
+            </div>
+        </div>
+        <div class="brand-mark">
+            <span class="dot"></span>
+            بوابة الدفع الإلكتروني
+        </div>
         <h1>مطعم باحجري</h1>
-        <p>بوابة الدفع الإلكتروني المباشر</p>
-    </header>
-
-    <div class="guide-bar">
-        <div class="step"><span class="step-icon">🏦</span>اختر المصرف</div>
-        <div class="step"><span class="step-icon">📋</span>انسخ الرقم</div>
-        <div class="step"><span class="step-icon">✅</span>سدد بنجاح</div>
+        <p>اختر الحساب، انسخ الرقم أو امسح QR، وسدد بأمان</p>
     </div>
-    
-    <div class="container" id="bankList"></div>
+</header>
 
-    <footer>
-       🚀 تصميم وتطوير/ <b>طائع العكبري</b><br>
-       📞 تواصل: 737606405
-    </footer>
+<div class="marquee" id="marquee">
+    <div class="marquee-track">
+        <span>💳 دفع إلكتروني آمن ومباشر</span>
+        <span>📱 امسح رمز QR للدفع السريع</span>
+        <span>🔒 تأكد من اسم صاحب الحساب قبل التحويل</span>
+    </div>
+    <button class="marquee-close" id="marqueeClose" aria-label="إغلاق">✕</button>
+</div>
 
-    <div id="toast">تم النسخ ✅</div>
+<div class="security-banner">
+    <div class="security-inner">
+        <span>🔒</span>
+        <span>تأكد من تطابق اسم صاحب الحساب قبل التحويل. لا تشارك بياناتك مع أي جهة أخرى.</span>
+    </div>
+</div>
 
-    <script>
-        const banks = [
-            { name: "شركة العمقي", owner: "عمر سعيد عمر باحجري", acc: "254085733", color: "#21B573", logo: "logo_amqy.png" },
-            { name: "شركة المحضار", owner: "عمر سعيد عمر باحجري", acc: "90547", color: "#1A2A47", logo: "logo_mahdhar.png" },
-            { name: "شركة بن دول", owner: "محمد سعيد عمر باحجري", acc: "23155897", color: "#2e5a88", logo: "logo_bindoul.png" },
-            { name: "بنك بن دول", owner: "محمد سعيد عمر باحجري", acc: "271844", color: "#2E3192", logo: "logo_bindoulbnk.png" },
-            { name: "شركة البسيري", owner: "احمد سعيد عمر باحجري", acc: "239108048", color: "#1D3E92", logo: "logo_busairi.png" },
-            { name: "بنك حضرموت", owner: "مطعم باحجري بحضرموت", acc: "49498", color: "#244B94", logo: "logo_hadhramout.png" },
-            { name: "بنك القطيبي", owner: "محمد سعيد عمر باحجري", acc: "92836680", color: "#9dcd5a", logo: "logo_kutibi.png" },
-            { name: "بنك الكريمي يمني", owner: "محمد سعيد عمر باحجري", acc: "3096314848", color: "#6B2DAB", logo: "logo_kuraimi.png" },
-            { name: "بنك الكريمي سعودي", owner: "محمد سعيد عمر باحجري", acc: "3096252233", color: "#6B2DAB", logo: "logo_kuraimi.png" },
-            { name: "الكريمي حاسب", owner: "مطعم باحجري", acc: "992618", color: "#9C5FD1", logo: "logo_kuraimipay.png" },
-            { name: "بن دول باي", owner: "مطعم باحجري", acc: "103395", color: "#0d47a1", logo: "logo_bindoul_pay.png" },
-            { name: "القطيبي شلن", owner: "مطعم باحجري", acc: "301695", color: "#B6D433", logo: "logo_kutibi_shilin.png" },
-            { name: "بي كاش", owner: "مطعم باحجري", acc: "055366", color: "#3671B6", logo: "logo_b_cach.png" },
-            { name: "عدن كاش", owner: "مطعم باحجري", acc: "1179601", color: "#4B0D0D", logo: "logo_aden_cach.png" }
-        ];
+<main class="container">
 
-        const container = document.getElementById('bankList');
+    <div class="search-box">
+        <input type="search" id="searchInput" placeholder="ابحث باسم البنك أو صاحب الحساب..." autocomplete="off" aria-label="بحث">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+    </div>
 
-        banks.forEach(bank => {
-            const card = document.createElement('div');
-            card.className = 'bank-card';
-            card.style.backgroundColor = bank.color;
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="bank-info">
-                        <span class="bank-name">${bank.name}</span><br>
-                        <span class="owner-name">${bank.owner}</span>
+    <div class="filters" id="filters" role="tablist">
+        <button class="chip active" data-filter="all" role="tab">الكل</button>
+        <button class="chip" data-filter="bank" role="tab">🏦 بنوك</button>
+        <button class="chip" data-filter="company" role="tab">💱 شركات صرافة</button>
+        <button class="chip" data-filter="wallet" role="tab">📱 محافظ</button>
+        <button class="chip" data-filter="favorites" role="tab">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            المفضلة
+        </button>
+    </div>
+
+    <div class="history-section" id="historySection">
+        <div class="history-header">
+            <span>🕐 آخر الحسابات التي نسختها</span>
+            <button id="clearHistory">مسح</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div class="results" id="results"></div>
+
+    <div class="cards" id="bankList" role="list"></div>
+
+    <div class="empty" id="emptyState">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path><path d="M8 11h6"></path></svg>
+        <p>لا توجد نتائج مطابقة لبحثك</p>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <p class="dev-line">تصميم وتطوير / <b>طائع العكبري</b></p>
+        <p class="dev-phone">📞 737606405</p>
+    </div>
+</footer>
+
+<a href="https://bahajri.my.canva.site/" class="fab" id="fabContact" aria-label="تواصل معنا" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    تواصل
+</a>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMsg">تم النسخ</span>
+    <div class="toast-progress" id="toastProgress"></div>
+</div>
+
+<div class="modal" id="qrModal">
+    <div class="modal-content">
+        <button class="modal-close" id="qrClose" aria-label="إغلاق">✕</button>
+        <div class="modal-title" id="qrBankName">اسم البنك</div>
+        <div class="modal-subtitle">امسح الرمز من تطبيق البنك للدفع السريع</div>
+        <div class="qr-wrap">
+            <div class="qr-code"><img id="qrImage" alt="QR Code" src=""></div>
+            <div class="qr-acc" id="qrAcc">0000</div>
+            <p class="qr-hint">يمكنك أيضاً النقر على الرقم لنسخه يدوياً</p>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ==================== البيانات ==================== */
+const banks = [
+    { name: "شركة المشقاص للصرافة",  owner: "عمر سعيد عمر باحجري",   acc: "254085733",  color: "#005A3C", logo: "logo_amqy.png",       type: "company" },
+    { name: "شركة المحضار للصرافة",  owner: "عمر سعيد عمر باحجري",   acc: "90547",      color: "#0F1F4A", logo: "logo_mahdhar.png",    type: "company" },
+    { name: "شركة بن دول للصرافة",   owner: "محمد سعيد عمر باحجري",  acc: "23155897",   color: "#1A2B50", logo: "logo_bindoul.png",    type: "company" },
+    { name: "بنك بن دول",            owner: "محمد سعيد عمر باحجري",  acc: "271844",     color: "#0F1F4A", logo: "logo_bindoulbnk.png", type: "bank"    },
+    { name: "شركة البسيري للصرافة",  owner: "احمد سعيد عمر باحجري",  acc: "239108048",  color: "#1D3E92", logo: "logo_busairi.png",    type: "company" },
+    { name: "بنك حضرموت",            owner: "مطعم باحجري بحضرموت",   acc: "49498",      color: "#0A2A5E", logo: "logo_hadhramout.png", type: "bank"    },
+    { name: "بنك القطيبي",           owner: "محمد سعيد عمر باحجري",  acc: "92836680",   color: "#9CCC3C", logo: "logo_kutibi.png",     type: "bank"    },
+    { name: "بنك الكريمي يمني",      owner: "محمد سعيد عمر باحجري",  acc: "3096314848", color: "#6B2DAB", logo: "logo_kuraimi.png",    type: "bank"    },
+    { name: "بنك الكريمي سعودي",     owner: "محمد سعيد عمر باحجري",  acc: "3096252233", color: "#6B2DAB", logo: "logo_kuraimi.png",    type: "bank"    },
+    { name: "بنك عدن",               owner: "عمر سعيد عمر باحجري",   acc: "108693",     color: "#4B0D0D", logo: "logo_aden_b.png",     type: "bank"    },
+    { name: "شركة عدن للصرافة",      owner: "عمر سعيد عمر باحجري",   acc: "1226088",    color: "#7A1515", logo: "logo_aden_s.png",     type: "company" },
+    { name: "شركة الطريحي للصرافة",  owner: "عمر سعيد عمر باحجري",   acc: "2311860",    color: "#1E3A7A", logo: "logo_aden_t.png",     type: "company" },
+    { name: "الكريمي حاسب",          owner: "مطعم باحجري",           acc: "992618",     color: "#7B3FB0", logo: "logo_kuraimipay.png", type: "wallet"  },
+    { name: "بن دول باي",            owner: "مطعم باحجري",           acc: "103395",     color: "#1E4A8C", logo: "logo_bindoul_pay.png",type: "wallet"  },
+    { name: "بي كاش",                owner: "مطعم باحجري",           acc: "055366",     color: "#2E5A9A", logo: "logo_b_cach.png",     type: "wallet"  },
+    { name: "عدن كاش",               owner: "مطعم باحجري",           acc: "1179601",    color: "#4B0D0D", logo: "logo_aden_cach.png",  type: "wallet"  },
+    { name: "تمكين",                 owner: "مطعم باحجري",           acc: "48932",      color: "#0A5868", logo: "tmkin.png",           type: "wallet"  }
+];
+
+/* ==================== الأيقونات ==================== */
+const ICON_COPY  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+const ICON_CHECK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+const ICON_STAR  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+const ICON_STAR_F = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
+const ICON_QR    = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`;
+const ICON_WA    = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+/* ==================== العناصر ==================== */
+const $ = id => document.getElementById(id);
+const grid         = $('bankList');
+const searchInp    = $('searchInput');
+const filtersBox   = $('filters');
+const emptyState   = $('emptyState');
+const results      = $('results');
+const toast        = $('toast');
+const toastMsg     = $('toastMsg');
+const toastProgress= $('toastProgress');
+const scrollProg   = $('scrollProgress');
+const historySection = $('historySection');
+const historyList  = $('historyList');
+const themeToggle  = $('themeToggle');
+const themeIcon    = $('themeIcon');
+const themeText    = $('themeText');
+const qrModal      = $('qrModal');
+const qrImage      = $('qrImage');
+const qrAcc        = $('qrAcc');
+const qrBankName   = $('qrBankName');
+const metaTheme    = $('metaTheme');
+
+let currentFilter = 'all';
+let toastTimer = null;
+
+const isAvailable = acc => acc && acc !== '#' && acc !== 'سيتم إضافته';
+const canHover = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/* ==================== PWA ==================== */
+(function setupManifest() {
+    const iconSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#0f172a"/><text x="96" y="128" font-size="88" text-anchor="middle" fill="#10b981" font-family="sans-serif" font-weight="800">ب</text></svg>`)}`;
+    const manifest = {
+        name: "مطعم باحجري — بوابة الدفع", short_name: "باحجري",
+        description: "بوابة الدفع الإلكتروني لمطعم باحجري",
+        start_url: ".", display: "standalone", orientation: "portrait",
+        background_color: "#0f172a", theme_color: "#0f172a",
+        icons: [
+            { src: iconSvg, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+            { src: iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+        ]
+    };
+    $('manifestLink').href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
+})();
+
+/* ==================== المفضلة ==================== */
+function getFavs() { try { return JSON.parse(localStorage.getItem('bahjri_favs') || '[]'); } catch { return []; } }
+function toggleFav(name) {
+    const favs = getFavs();
+    const i = favs.indexOf(name);
+    if (i > -1) favs.splice(i, 1); else favs.push(name);
+    localStorage.setItem('bahjri_favs', JSON.stringify(favs));
+    return i === -1;
+}
+
+/* ==================== سجل النسخ ==================== */
+function getHistory() { try { return JSON.parse(localStorage.getItem('bahjri_history') || '[]'); } catch { return []; } }
+function addHistory(bank) {
+    let hist = getHistory().filter(h => h.acc !== bank.acc);
+    hist.unshift({ acc: bank.acc, name: bank.name, color: bank.color });
+    hist = hist.slice(0, 5);
+    localStorage.setItem('bahjri_history', JSON.stringify(hist));
+    renderHistory();
+}
+function renderHistory() {
+    const hist = getHistory();
+    if (!hist.length) { historySection.classList.remove('show'); return; }
+    historySection.classList.add('show');
+    historyList.innerHTML = '';
+    hist.forEach(h => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+            <span class="history-dot" style="background:${h.color}"></span>
+            <div class="history-info">
+                <div class="history-name">${h.name}</div>
+                <div class="history-acc">${h.acc}</div>
+            </div>
+            <button class="history-copy" data-copy="${h.acc}">نسخ</button>
+        `;
+        historyList.appendChild(item);
+    });
+}
+$('clearHistory').addEventListener('click', () => {
+    localStorage.removeItem('bahjri_history');
+    renderHistory();
+    showToast('تم مسح السجل');
+});
+
+/* ==================== الوضع الليلي ==================== */
+function getTheme() {
+    const stored = localStorage.getItem('bahjri_theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('bahjri_theme', theme);
+    metaTheme.content = theme === 'dark' ? '#030712' : '#0f172a';
+    if (theme === 'dark') {
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        themeText.textContent = 'نهاري';
+    } else {
+        themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        themeText.textContent = 'ليلي';
+    }
+}
+applyTheme(getTheme());
+themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    showToast(next === 'dark' ? '🌙 الوضع الليلي مفعّل' : '☀️ الوضع النهاري مفعّل');
+});
+
+/* ==================== الساعة ==================== */
+function updateClock() {
+    const now = new Date();
+    $('clock').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ==================== العدّاد ==================== */
+function animateCount(el, target, dur = 900) {
+    const start = parseInt(el.textContent) || 0;
+    if (start === target) return;
+    const t0 = performance.now();
+    function step(t) {
+        const p = Math.min((t - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(start + (target - start) * eased);
+        if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+/* ==================== 🔥 تأثير 3D التفاعلي ==================== */
+function attachTilt(card) {
+    let rafId = null;
+
+    function onMove(e) {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+
+            card.style.setProperty('--mx', x + 'px');
+            card.style.setProperty('--my', y + 'px');
+
+            const rx = ((y - cy) / cy) * -9;
+            const ry = ((x - cx) / cx) * 9;
+
+            card.style.transition = 'transform .12s ease-out, box-shadow .4s';
+            card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.02)`;
+        });
+    }
+
+    function onLeave() {
+        if (rafId) cancelAnimationFrame(rafId);
+        card.style.transition = 'transform .55s cubic-bezier(.2,.8,.3,1), box-shadow .4s';
+        card.style.transform = '';
+        card.style.setProperty('--mx', '50%');
+        card.style.setProperty('--my', '50%');
+    }
+
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseleave', onLeave);
+}
+
+/* ==================== رسم البطاقات ==================== */
+function render(animated = true) {
+    const query = searchInp.value.trim().toLowerCase();
+    const favs = getFavs();
+
+    const list = banks.filter(b => {
+        let typeOk;
+        if (currentFilter === 'favorites') typeOk = favs.includes(b.name);
+        else if (currentFilter === 'all') typeOk = true;
+        else typeOk = b.type === currentFilter;
+        const textOk = !query ||
+            b.name.toLowerCase().includes(query) ||
+            b.owner.toLowerCase().includes(query) ||
+            String(b.acc).includes(query);
+        return typeOk && textOk;
+    });
+
+    if (!list.length) {
+        emptyState.classList.add('show');
+        results.innerHTML = '';
+        grid.innerHTML = '';
+        return;
+    }
+    emptyState.classList.remove('show');
+
+    const availableCount = list.filter(b => isAvailable(b.acc)).length;
+    results.innerHTML = `<span class="count"><b id="resultNum">0</b> حساب متاح من ${list.length}</span>`;
+    animateCount($('resultNum'), availableCount, 600);
+
+    grid.innerHTML = '';
+
+    list.forEach((bank, i) => {
+        const available = isAvailable(bank.acc);
+        const fav = favs.includes(bank.name);
+
+        const wrap = document.createElement('div');
+        wrap.className = 'card-wrap';
+        wrap.setAttribute('role', 'listitem');
+        if (animated) wrap.style.animationDelay = Math.min(i * 60, 600) + 'ms';
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.style.setProperty('--bank-color', available ? bank.color : '#64748b');
+
+        card.innerHTML = `
+            <div class="card-bg"></div>
+            <div class="card-shine"></div>
+            <div class="card-content">
+                <div class="card-top">
+                    <div class="card-info">
+                        <h3 class="card-name">${bank.name}</h3>
+                        <span class="card-owner">${bank.owner}</span>
                     </div>
-                    <div class="bank-logo-circle">
-                        <img src="${bank.logo}" alt="Logo" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=Bank'">
+                    <div class="card-logo">
+                        <img src="${bank.logo}" alt="${bank.name}" loading="lazy">
                     </div>
                 </div>
-                <div class="acc-number">${bank.acc}</div>
-                <button onclick="copyText('${bank.acc}')">📋 نسخ رقم الحساب</button>
-            `;
-            container.appendChild(card);
+                <div class="acc-wrap">
+                    <span class="acc-label">رقم الحساب</span>
+                    <div class="acc-num ${available ? '' : 'unavailable'}"
+                         ${available ? `data-copy="${bank.acc}" title="انقر للنسخ"` : ''}>
+                        ${available ? bank.acc : 'غير متوفر حالياً'}
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="icon-btn primary copy-btn" ${available ? `data-copy="${bank.acc}"` : 'disabled'} aria-label="نسخ">
+                        ${available ? ICON_COPY : ICON_CHECK}
+                        <span class="btn-label">نسخ</span>
+                    </button>
+                    <button class="icon-btn qr-btn" ${available ? `data-qr="${bank.acc}"` : 'disabled'} aria-label="QR">
+                        ${ICON_QR}
+                        <span>QR</span>
+                    </button>
+                    <button class="icon-btn fav-btn ${fav ? 'active' : ''}" data-fav="${bank.name}" aria-label="مفضلة">
+                        ${fav ? ICON_STAR_F : ICON_STAR}
+                    </button>
+                    <a class="icon-btn wa" href="https://wa.me/?text=${encodeURIComponent('حساب ' + bank.name + ' — ' + bank.owner + '\nالرقم: ' + bank.acc)}" target="_blank" rel="noopener" aria-label="واتساب">
+                        ${ICON_WA}
+                    </a>
+                </div>
+            </div>
+        `;
+
+        const img = card.querySelector('img');
+        img.addEventListener('error', () => {
+            const circle = img.parentElement;
+            img.remove();
+            const fb = document.createElement('span');
+            fb.className = 'fallback';
+            fb.textContent = bank.name.trim().charAt(0);
+            circle.appendChild(fb);
         });
 
-        function copyText(text) {
-            if(text === "سيتم إضافته") {
-                alert("الرقم غير متوفر حالياً");
-                return;
-            }
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById("toast");
-                toast.className = "show";
-                setTimeout(() => { toast.className = toast.طجclassName.replace("show", ""); }, 3000);
-            });
+        if (available && canHover()) {
+            attachTilt(card);
         }
-    </script>
+
+        wrap.appendChild(card);
+        grid.appendChild(wrap);
+    });
+}
+
+/* ==================== تأثير الموجة ==================== */
+function createRipple(el, e) {
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = (e ? e.clientX : rect.left + rect.width / 2) - rect.left;
+    const y = (e ? e.clientY : rect.top + rect.height / 2) - rect.top;
+    const ripple = document.createElement('span');
+    ripple.style.cssText = `position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);pointer-events:none;
+        width:${size}px;height:${size}px;left:${x - size/2}px;top:${y - size/2}px;
+        animation:rippleAnim .65s ease-out forwards;`;
+    el.style.position = 'relative';
+    el.style.overflow = 'hidden';
+    el.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 650);
+}
+const style = document.createElement('style');
+style.textContent = '@keyframes rippleAnim { to { transform: scale(3); opacity: 0; } }';
+document.head.appendChild(style);
+
+/* ==================== الكونفيتي ==================== */
+function burstConfetti(x, y) {
+    const colors = ['#10b981', '#34d399', '#059669', '#fbbf24', '#f59e0b', '#3b82f6', '#fff'];
+    const count = 18;
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.background = colors[i % colors.length];
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.6;
+        const dist = 55 + Math.random() * 80;
+        p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        p.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
+    }
+}
+
+/* ==================== النسخ ==================== */
+async function copyText(text, sourceEl, evX, evY, bankName) {
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+        }
+
+        if (evX !== undefined) burstConfetti(evX, evY);
+
+        const bank = banks.find(b => b.acc === text);
+        if (bank) addHistory(bank);
+
+        showToast(bankName ? `✅ تم نسخ حساب ${bankName}` : '✅ تم نسخ الرقم بنجاح');
+
+        if (sourceEl) {
+            const card = sourceEl.closest('.card');
+            const btn = sourceEl.classList.contains('copy-btn')
+                ? sourceEl
+                : card ? card.querySelector('.copy-btn') : null;
+
+            if (card) {
+                card.classList.add('success');
+                setTimeout(() => card.classList.remove('success'), 900);
+            }
+            if (btn && !btn.disabled) {
+                const label = btn.querySelector('.btn-label');
+                const original = label ? label.textContent : '';
+                const svg = btn.querySelector('svg');
+                const originalSvg = svg ? svg.outerHTML : '';
+
+                btn.classList.add('copied');
+                if (label) label.textContent = 'تم';
+                if (svg) btn.querySelector('svg').outerHTML = ICON_CHECK;
+
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    if (label) label.textContent = original;
+                    const curSvg = btn.querySelector('svg');
+                    if (curSvg && originalSvg) curSvg.outerHTML = originalSvg;
+                }, 1600);
+            }
+        }
+    } catch (err) {
+        showToast('تعذّر النسخ، انسخ الرقم يدوياً', true);
+    }
+}
+
+/* ==================== التوست ==================== */
+function showToast(message, isError) {
+    clearTimeout(toastTimer);
+    toastMsg.textContent = message;
+    toast.classList.toggle('error', !!isError);
+    toast.classList.remove('show');
+    toastProgress.style.animation = 'none';
+    void toastProgress.offsetWidth;
+    toastProgress.style.animation = '';
+    requestAnimationFrame(() => toast.classList.add('show'));
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+/* ==================== QR ==================== */
+function openQR(bank) {
+    qrBankName.textContent = bank.name;
+    qrAcc.textContent = bank.acc;
+    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=8&data=${encodeURIComponent(bank.acc)}`;
+    qrImage.alt = `QR لحساب ${bank.name}`;
+    qrModal.classList.add('show');
+}
+$('qrClose').addEventListener('click', () => qrModal.classList.remove('show'));
+qrModal.addEventListener('click', e => { if (e.target === qrModal) qrModal.classList.remove('show'); });
+qrAcc.addEventListener('click', () => {
+    copyText(qrAcc.textContent, null, window.innerWidth / 2, window.innerHeight / 2);
+});
+
+/* ==================== الأحداث ==================== */
+grid.addEventListener('click', e => {
+    const copyTarget = e.target.closest('[data-copy]');
+    if (copyTarget && !copyTarget.disabled) {
+        const bank = banks.find(b => b.acc === copyTarget.dataset.copy);
+        copyText(copyTarget.dataset.copy, copyTarget, e.clientX, e.clientY, bank ? bank.name : null);
+        return;
+    }
+    const qrTarget = e.target.closest('[data-qr]');
+    if (qrTarget && !qrTarget.disabled) {
+        const bank = banks.find(b => b.acc === qrTarget.dataset.qr);
+        if (bank) openQR(bank);
+        return;
+    }
+    const favTarget = e.target.closest('[data-fav]');
+    if (favTarget) {
+        const added = toggleFav(favTarget.dataset.fav);
+        if (added) {
+            favTarget.classList.add('active');
+            favTarget.innerHTML = ICON_STAR_F;
+            showToast('⭐ أضيف إلى المفضلة');
+        } else {
+            favTarget.classList.remove('active');
+            favTarget.innerHTML = ICON_STAR;
+            showToast('أزيل من المفضلة');
+            if (currentFilter === 'favorites') render(false);
+        }
+    }
+});
+
+historyList.addEventListener('click', e => {
+    const btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    copyText(btn.dataset.copy, null, e.clientX, e.clientY);
+});
+
+filtersBox.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    createRipple(chip, e);
+    filtersBox.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    grid.style.opacity = '0';
+    setTimeout(() => {
+        render();
+        grid.style.opacity = '1';
+    }, 150);
+});
+
+let searchTimer = null;
+searchInp.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => render(), 130);
+});
+
+/* ==================== شريط الإعلانات ==================== */
+$('marqueeClose').addEventListener('click', () => {
+    $('marquee').style.display = 'none';
+    try { sessionStorage.setItem('bahjri_marquee', 'closed'); } catch {}
+});
+try {
+    if (sessionStorage.getItem('bahjri_marquee') === 'closed') $('marquee').style.display = 'none';
+} catch {}
+
+/* ==================== شريط التمرير ==================== */
+let scrollRaf;
+window.addEventListener('scroll', () => {
+    cancelAnimationFrame(scrollRaf);
+    scrollRaf = requestAnimationFrame(() => {
+        const h = document.documentElement;
+        const total = h.scrollHeight - h.clientHeight;
+        const p = total > 0 ? h.scrollTop / total : 0;
+        scrollProg.style.transform = `scaleX(${p})`;
+    });
+}, { passive: true });
+
+/* ==================== FAB المغناطيسي ==================== */
+let fabRaf;
+const fabContact = $('fabContact');
+if (canHover()) {
+    document.addEventListener('mousemove', e => {
+        const rect = fabContact.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        const dist = Math.hypot(dx, dy);
+        if (dist < 180) {
+            cancelAnimationFrame(fabRaf);
+            fabRaf = requestAnimationFrame(() => {
+                const pull = (1 - dist / 180) * 0.35;
+                fabContact.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
+            });
+        } else {
+            cancelAnimationFrame(fabRaf);
+            fabContact.style.transform = '';
+        }
+    });
+}
+
+/* ==================== التشغيل ==================== */
+window.addEventListener('load', () => {
+    setTimeout(() => $('splash').classList.add('hide'), 900);
+    renderHistory();
+});
+
+render();
+</script>
 </body>
 </html>
